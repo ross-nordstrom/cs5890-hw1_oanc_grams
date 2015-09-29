@@ -28,3 +28,7 @@ node_modules
 
 # IntelliJ
 .idea
+
+# Data and docs don't get committed for size
+data
+doc

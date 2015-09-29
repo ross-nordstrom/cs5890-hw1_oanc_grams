@@ -35,9 +35,12 @@ if (argv.help) {
 
 } else {
 
-    // TODO: Logic here
+    var dir = argv.in;
 
-    cliHelper.printHelp(argv);
+    var files = cliHelper.listFlatFilesInDir(dir);
+    var fileStats = gramAnalyzer.stats(files.map(cliHelper.fileSize));
+    console.log("1. File stats: ", fileStats);
+
     process.exit(1);
 
 }
