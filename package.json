@@ -5,11 +5,12 @@
   "main": "cli.js",
   "bin": "cli.js",
   "dependencies": {
-    "minimist": "1.1.1",
     "async": "0.9.0",
+    "minimist": "1.1.1",
+    "natural": "0.2.1",
     "superagent": "1.2.0",
     "underscore": "1.8.3",
-    "natural": "0.2.1"
+    "underscore.string": "^3.2.2"
   },
   "devDependencies": {
     "mocha": "2.1.0",
@@ -36,7 +37,9 @@
   },
   "homepage": "https://github.com/ross-nordstrom/cs5890-hw1_oanc_grams",
   "keywords": [
-     "nlp", "oanc", "ngrams"
+    "nlp",
+    "oanc",
+    "ngrams"
   ],
   "author": {
     "name": "Ross Nordstrom",

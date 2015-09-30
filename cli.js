@@ -16,12 +16,14 @@ var options = {
     alias: {
         help: ['h'],
         verbose: ['v'],
+        out: ['o'],
         in: ['i'],
-        out: ['o']
+        extension: ['e']
     },
     default: {
         out: './data',
         in: './data',
+        extension: 'txt',
         verbose: false
     }
 };
@@ -36,10 +38,21 @@ if (argv.help) {
 } else {
 
     var dir = argv.in;
+    var extensions = !argv.extension ? null : argv.extension.split(',').map(function prefixDot(s) {
+        return '.' + s;
+    });
 
-    var files = cliHelper.listFlatFilesInDir(dir);
-    var fileStats = gramAnalyzer.stats(files.map(cliHelper.fileSize));
-    console.log("1. File stats: ", fileStats);
+    var files = cliHelper.listFlatFilesInDir(dir, extensions);
+
+    console.log("Check against extensions: ", extensions);
+    var whitelistedFiles = files.filter(cliHelper.hasWhitelistedExtension.bind(null, extensions));
+    var fileStats = gramAnalyzer.stats(whitelistedFiles.map(cliHelper.fileSize));
+    console.log("1. File stats: \n", fileStats);
+
+    //var sentenceStats;
+    //var sampleFile = cliHelper.fileContent(_.first(files));
+    //var sampleSentences = gramAnalyzer.sentences(sampleFile);
+    //console.log("2. Sentence stats: \n", _.first(sampleSentences));
 
     process.exit(1);
 
