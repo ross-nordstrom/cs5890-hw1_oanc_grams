@@ -44,15 +44,30 @@ if (argv.help) {
 
     var files = cliHelper.listFlatFilesInDir(dir, extensions);
 
-    console.log("Check against extensions: ", extensions);
     var whitelistedFiles = files.filter(cliHelper.hasWhitelistedExtension.bind(null, extensions));
     var fileStats = gramAnalyzer.stats(whitelistedFiles.map(cliHelper.fileSize));
     console.log("1. File stats: \n", fileStats);
 
-    //var sentenceStats;
-    //var sampleFile = cliHelper.fileContent(_.first(files));
-    //var sampleSentences = gramAnalyzer.sentences(sampleFile);
-    //console.log("2. Sentence stats: \n", _.first(sampleSentences));
+    var allSentenceStats = whitelistedFiles.map(function statsForFile(whitelistedFile) {
+        var fileContent = cliHelper.fileContent(whitelistedFile);
+        var sentences = gramAnalyzer.sentences(fileContent);
+        var sentenceStats = gramAnalyzer.stats(sentences.map(gramAnalyzer.wordsInSentence));
+        sentenceStats.totalSentences = sentences.length;
+
+        return sentenceStats;
+    });
+    //  Aggregate all the stats into a single stat
+    var overallSentenceStats = _.reduce(allSentenceStats, function aggregateSentenceStats(a, b) {
+        var count = a.count + b.count;
+        return {
+            min: Math.min(a.min, b.min),
+            mean: ((a.mean * a.count) + (b.mean * b.count)) / count,
+            max: Math.max(a.max, b.max),
+            count: count,
+            totalSentences: a.totalSentences + b.totalSentences
+        };
+    }, {min: Infinity, mean: null, max: -Infinity, count: 0, totalSentences: 0});
+    console.log("2. Sentence stats: \n", _.omit(overallSentenceStats, 'median'));
 
     process.exit(1);
 
