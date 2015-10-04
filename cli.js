@@ -18,12 +18,14 @@ var options = {
         verbose: ['v'],
         in: ['i'],
         cache: ['c'],
-        extension: ['e']
+        extension: ['e'],
+        kGrams: ['k']
     },
     default: {
         in: './data',
         cache: './cache',
         extension: 'txt',
+        kGrams: 10,
         verbose: false
     }
 };
@@ -43,16 +45,23 @@ if (argv.help) {
     var extensions = !argv.extension ? null : argv.extension.split(',').map(function prefixDot(s) {
         return '.' + s;
     });
+    var kGrams = argv.kGrams;
+
     console.log("1. Using OANC data: " + dir + " (ext: " + JSON.stringify(extensions) + ")");
 
-    // Step 2.
-    var fileInfo = gramAnalyzer.analyzeFiles(cache, dir, extensions);
-    console.log("2. File stats: " + JSON.stringify(fileInfo.fileStats, null, 4));
+    // Step 2. Stats on sizes of files in question
+    var fileInfo = gramAnalyzer.step2_analyzeFiles(cache, dir, extensions);
+    console.log("2. File stats:     " + JSON.stringify(fileInfo.fileStats, null, 4));
 
-    // Step 3.
-    var sentenceInfo = gramAnalyzer.analyzeSentencesAndWords(cache, fileInfo.files);
+    // Step 3. Stats on sentences size by word, and number of words in each file
+    var sentenceInfo = gramAnalyzer.step3_analyzeSentencesAndWords(cache, fileInfo.files);
     console.log("3. Sentence stats: " + JSON.stringify(sentenceInfo.sentenceStats, null, 4));
-    console.log("3. Word stats " + JSON.stringify(sentenceInfo.wordStats, null, 4));
+    console.log("   Word stats:     " + JSON.stringify(sentenceInfo.wordStats, null, 4));
+
+    // Step 4. Unigram/Bigram info, limited to Top-K (10 in assignment)
+    var gramInfo = gramAnalyzer.step4_analyzeGrams(cache, kGrams, fileInfo.files);
+    console.log("4. Unigram stats:  " + JSON.stringify(gramInfo.unigrams, null, 4));
+    console.log("   Bigram stats:   " + JSON.stringify(gramInfo.bigrams, null, 4));
 
     process.exit(1);
 
