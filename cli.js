@@ -65,7 +65,7 @@ if (argv.help) {
     console.log("   Bigram stats:   " + JSON.stringify(gramBasicInfo.bigrams, null, 4));
 
     // Step 5. Unigram/Bigram with Good-Turing smoothing
-    var gramGoodTuringInfo = gramAnalyzer.step5_analyzeGramsGood(cache, kGrams, fileInfo.files);
+    var gramGoodTuringInfo = gramAnalyzer.step5_analyzeGramsGoodTuring(cache, kGrams, sentenceInfo.wordStats.total, fileInfo.files);
     console.log("5. N-Gram stats with Good-Turing smoothing");
     console.log("   Unigram stats:  " + JSON.stringify(gramGoodTuringInfo.unigrams, null, 4));
     console.log("   Bigram stats:   " + JSON.stringify(gramGoodTuringInfo.bigrams, null, 4));
