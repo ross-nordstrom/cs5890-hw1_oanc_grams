@@ -59,9 +59,17 @@ if (argv.help) {
     console.log("   Word stats:     " + JSON.stringify(sentenceInfo.wordStats, null, 4));
 
     // Step 4. Unigram/Bigram info, limited to Top-K (10 in assignment)
-    var gramInfo = gramAnalyzer.step4_analyzeGrams(cache, kGrams, fileInfo.files);
-    console.log("4. Unigram stats:  " + JSON.stringify(gramInfo.unigrams, null, 4));
-    console.log("   Bigram stats:   " + JSON.stringify(gramInfo.bigrams, null, 4));
+    var gramBasicInfo = gramAnalyzer.step4_analyzeGrams(cache, kGrams, fileInfo.files);
+    console.log("4. N-Gram stats with no smoothing");
+    console.log("   Unigram stats:  " + JSON.stringify(gramBasicInfo.unigrams, null, 4));
+    console.log("   Bigram stats:   " + JSON.stringify(gramBasicInfo.bigrams, null, 4));
+
+    // Step 5. Unigram/Bigram with Good-Turing smoothing
+    var gramGoodTuringInfo = gramAnalyzer.step5_analyzeGramsGood(cache, kGrams, fileInfo.files);
+    console.log("5. N-Gram stats with Good-Turing smoothing");
+    console.log("   Unigram stats:  " + JSON.stringify(gramGoodTuringInfo.unigrams, null, 4));
+    console.log("   Bigram stats:   " + JSON.stringify(gramGoodTuringInfo.bigrams, null, 4));
+
 
     process.exit(1);
 
