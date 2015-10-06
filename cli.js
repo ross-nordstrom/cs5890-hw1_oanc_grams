@@ -65,10 +65,16 @@ if (argv.help) {
     console.log("   Bigram stats:   " + JSON.stringify(gramBasicInfo.bigrams, null, 4));
 
     // Step 5. Unigram/Bigram with Good-Turing smoothing
-    var gramGoodTuringInfo = gramAnalyzer.step5_analyzeGramsGoodTuring(cache, kGrams, sentenceInfo.wordStats.total, fileInfo.files);
+    var gramGoodTuringInfo = gramAnalyzer.step5_analyzeGramsGoodTuring(cache, kGrams, fileInfo.files);
     console.log("5. N-Gram stats with Good-Turing smoothing");
     console.log("   Unigram stats:  " + JSON.stringify(gramGoodTuringInfo.unigrams, null, 4));
     console.log("   Bigram stats:   " + JSON.stringify(gramGoodTuringInfo.bigrams, null, 4));
+
+    // Step 6. Unigram/Bigram with "Better" smoothing (I chose Kneser-Ney)
+    var gramKneserNeyInfo = gramAnalyzer.step6_analyzeGramsKneserNey(cache, kGrams, fileInfo.files);
+    console.log("6. N-Gram stats with Kneser-Ney smoothing");
+    console.log("   Unigram stats:  " + JSON.stringify(gramKneserNeyInfo.unigrams, null, 4));
+    console.log("   Bigram stats:   " + JSON.stringify(gramKneserNeyInfo.bigrams, null, 4));
 
 
     process.exit(1);
