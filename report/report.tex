@@ -81,7 +81,11 @@ previously-computed results for each of the steps of the assignment.  This was e
 useful for the development process, as the tool was run very frequently while debugging
 the code.
 
-\section{OANC File Stats}
+\section{Assignment Results}
+The assignment was posed as a series of steps. The subsections here describe what was
+done for each step, and the results found.
+
+\subsection{OANC File Stats}
 The second step of the assignment was to identify information about the dataset in terms
 of the files contained therewithin.  This step was implemented using a recursive
 depth-first-search of the {\tt --in} data directory (the OANC dataset).
@@ -104,7 +108,7 @@ Median size & 6493 (B) \\
 in terms of file count and file size (in bytes, B).}
 \end{table}
 
-\section{Sentence and Word Stats}
+\subsection{Sentence and Word Stats}
 The third step of the assignment was to analyze the sentences and words in the dataset. No
 specification was given regarding the tokenizing approach, so the Treebank tokenizer (via a
 public {\tt Node.js} library) was used for tokenizing words.  Sentences were found by simply
@@ -127,7 +131,7 @@ Sentence stats describe number of words found in sentences. Word stats describe
 words per file.}
 \end{table}
 
-\section{N-Gram stats with MLE}
+\subsection{N-Gram stats with MLE}
 The fourth step was to analyze the unigrams and bigrams found in the dataset,
 finding the top 10 highest occuring of each.  Bigrams were found within the
 context of each sentence to avoid artificially crossing sentence boundaries.
@@ -156,7 +160,7 @@ that & 130,042   & ) , & 17,535 \\
 Top 10 highest occurring unigrams and bigrams found in the Written OANC dataset.}
 \end{table}
 
-\section{N-Gram stats with Good-Turing}
+\subsection{N-Gram stats with Good-Turing}
 The fifth step of the assignment was to analyze the unigrams and bigrams with the
 Good-Turing smoothing method. These are shown in Table 5.
 
@@ -188,7 +192,7 @@ Top 10 highest occurring unigrams and bigrams found in the Written OANC dataset 
 applying Good-Turing smoothing.}
 \end{table}
 
-\section{N-Gram stats with Kneser-Ney}
+\subsection{N-Gram stats with Kneser-Ney}
 Step six of the assignment challenges the student to research a better smoothing method
 than Good-Turing.  For this solution, the Kneser-Ney smoothing technique was chosen.
 
@@ -215,7 +219,16 @@ from MLE unigrams) in the Kneser-Ney method.
 \begin{center}
 \begin{tabular}{|lr|}
 \hline \bf Bigrams & \\ \hline
-
+length of & 475.309  \\
+length , & 132.307  \\
+length and & 84.979  \\
+length ( & 32.624  \\
+length ) & 28.649   \\
+length . & 26.4968  \\
+length in & 25.413 \\
+length is & 25.158 \\
+length was & 21.919 \\
+length [ & 17.867  \\
 \hline
 \end{tabular}
 \end{center}
@@ -224,5 +237,14 @@ Top 10 highest occurring bigrams found in the Written OANC dataset after
 applying Kneser-Ney smoothing.}
 \end{table}
 
+Note the ``synergistic'' effect of {\em length}. Since it is used in a number
+of bigrams, it bolsters the whole group of them.
+
+\section{Conclusion}
+It is clear from this assignment that N-Gram statistical analysis of a corpus
+computationally expensive, and any short-cuts available which allow for a
+smaller vocabulary can be valuable. With more time, it would have been really
+interesting to compare the three methods (MLE, Good-Turing, and Kneser-Ney) in
+their ability to predict the ends of sentences, and to generate sentences.
 
 \end{document}
