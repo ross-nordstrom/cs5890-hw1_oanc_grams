@@ -34,3 +34,7 @@ node_modules
 data
 doc
 cache
+
+# Out
+*.pdf
+build

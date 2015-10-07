@@ -1,0 +1,228 @@
+% From https://www.sharelatex.com/templates/journals/acl-2014-paper
+\documentclass[11pt]{article}
+\usepackage{acl2014}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+
+\title{CS5890: Homework 1 \\ Unigram and Bigram Parsing of OANC Data}
+
+\author{Ross Nordstrom \\
+  University of Colorado - Colorado Springs \\
+  1420 Austin Bluffs Pkwy, \\
+  Colorado Springs, CO 80918 \\
+  {\tt rnordstr@uccs.edu nordstrom.ross@gmail.com} \\}
+
+\date{October 7, 2015}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  This assignment targets the implementation of a number of unigram and bigram
+  statistical parsing techniques as a means of learning NGram-based language
+  parsing.  Applications of these techniques are not discussed in this
+  assignment, but could include sentence validation and completion.
+\end{abstract}
+
+\section{Dataset and Approach}
+\label{datasetAndApproach}
+
+\subsection{OANC Dataset}
+
+The openly available {\em American National Corpus (OANC)} written datasets
+were used for this assignment. This dataset contains a large number of text
+files, each with corresponding {\tt XML} and {\tt ANC} files describing and
+augmenting the text document.
+
+For the sake of learning in the context of this assignment, only the original
+text files were used.
+
+\subsection{Approach}
+
+The assignment was implemented using a {\em Node.js} application exposed as
+a command-line tool, taking in parameters to drive the operation of the
+code. The parameters are described in Table 1.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline \bf Parameter & \bf Description \\ \hline
+--in (-i)            & Data directory from which \\
+                     & to read OANC data \\
+--cache (-c)         & Directory to use for file-system \\
+                     & caching. Useful since much of \\
+                     & this assignment is \\
+                     & computationally heavy. \\
+--extension (-e)     & Extension types to filter on \\
+                     & (e.g. txt) \\
+--kGrams (-k)        & How many (Top `k`) of unigrams \\
+                     & and bigrams to keep (e.g 10) \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{cliParams} Command-line parameters. \\
+These describe the available (optional) parameters when using
+the CLI tool, which all default to reasonable values.}
+\end{table}
+
+The use of Node.js allowed for quick development and access to a number
+of libraries (notably a Treebank parse) to leverage, at the trade-off of performance.
+
+To improve the efficiency of the tool, file-system caching was heavily used for retaining
+previously-computed results for each of the steps of the assignment.  This was especially
+useful for the development process, as the tool was run very frequently while debugging
+the code.
+
+\section{OANC File Stats}
+The second step of the assignment was to identify information about the dataset in terms
+of the files contained therewithin.  This step was implemented using a recursive
+depth-first-search of the {\tt --in} data directory (the OANC dataset).
+
+The stats can be found in Table 2. Note that size of the files is shown in bytes.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline \bf Stat & \bf Value \\ \hline
+Text Files & 6424 \\
+Min size & 102 (B) \\
+Mean size & 12349.77 (B) \\
+Max size & 400528 (B) \\
+Median size & 6493 (B) \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{fileStats} Written OANC File statistics. Information about the OANC dataset used,
+in terms of file count and file size (in bytes, B).}
+\end{table}
+
+\section{Sentence and Word Stats}
+The third step of the assignment was to analyze the sentences and words in the dataset. No
+specification was given regarding the tokenizing approach, so the Treebank tokenizer (via a
+public {\tt Node.js} library) was used for tokenizing words.  Sentences were found by simply
+splitting the dataset files on the {\tt newline} character.
+Statistics about the sentences and words found in the dataset are shown in Table 3.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|lr|lr|}
+\hline \bf Sentences & & \bf Words & \\ \hline
+Total & 1.22 M & Total & 12.97 M \\
+Min words & 0 & Mean words & 2019.52 \\
+Mean words & 10.68 & Mean uniq & 685.52 \\
+Max words & 529 & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tokenStats} Written OANC sentence and Word statistics.
+Sentence stats describe number of words found in sentences. Word stats describe
+words per file.}
+\end{table}
+
+\section{N-Gram stats with MLE}
+The fourth step was to analyze the unigrams and bigrams found in the dataset,
+finding the top 10 highest occuring of each.  Bigrams were found within the
+context of each sentence to avoid artificially crossing sentence boundaries.
+A {\tt Node.js} library, {\em NaturalNode}, was used to identify bigrams from
+the tokenized (with Treebank parsing) sentences. The top 10 highest occuring
+unigrams and bigrams are shown in Table 4.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|lr|lr|}
+\hline \bf Unigrams & & \bf Bigrams & \\ \hline
+the & 627,600    & of the & 84,907 \\
+, & 594,194      & , and & 60,372 \\
+of & 382,414     & in the & 53,213 \\
+and & 290,250    & , the & 41,309 \\
+to & 261,924     & ) . & 31,848 \\
+a & 216,239      & to the & 30,243 \\
+in & 215,503     & ] . & 20,623 \\
+. & 188,310      & and the & 18,461 \\
+that & 130,042   & ) , & 17,535 \\
+) & 125,531      & on the & 17,437 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tokenStats} Written OANC unigram and bigram statistics (MLE).
+Top 10 highest occurring unigrams and bigrams found in the Written OANC dataset.}
+\end{table}
+
+\section{N-Gram stats with Good-Turing}
+The fifth step of the assignment was to analyze the unigrams and bigrams with the
+Good-Turing smoothing method. These are shown in Table 5.
+
+Note that the Good-Turing is mainly used for improving
+the probabilities of infrequently-occurring and never-seen n-grams.  Therefore, it
+should not be expected to differ in any significant way from base MLE counts for
+frequently occurring n-grams.  In other words, it isn't surprising that this list
+is nearly identical to Table 4.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|lr|lr|}
+\hline \bf Unigrams & & \bf Bigrams & \\ \hline
+the & 596,221     & of the & 81,056 \\
+, & 564,488        & , and & 58,010 \\
+of & 363,299         & in the & 51,278 \\
+and & 275,742     & , the & 40,116 \\
+to & 248,834      & ) . & 31,560 \\
+a & 205,438        & to the & 30,151 \\
+in & 204,748       & ] . & 19,832 \\
+. & 178,916       & and the & 19,452 \\
+that & 123,662    & on the & 18,790 \\
+) & 120,359        & ) , & 18,314 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tokenStats} Written OANC unigram and bigram statistics (Good-Turing).
+Top 10 highest occurring unigrams and bigrams found in the Written OANC dataset after
+applying Good-Turing smoothing.}
+\end{table}
+
+\section{N-Gram stats with Kneser-Ney}
+Step six of the assignment challenges the student to research a better smoothing method
+than Good-Turing.  For this solution, the Kneser-Ney smoothing technique was chosen.
+
+The Kneser-Ney method seeks to improve the estimates for low-count n-grams by intuiting
+that n-gram completion by looking at the perplexity of words (meaning the number of n-1 grams
+they complete), rather than simply their frequency. The canonical example illustrating this
+is the shown below:
+
+\begin{quote}
+I can't see without my reading \underline{\hspace{1cm}}.
+\end{quote}
+
+It's obvious to us that the blank should be ``glasses,'' but a an MLE method would select
+{\em Francisco}, because it is more frequently seen than {\em glasses}.  The intuition of
+Kneser-Ney is that, while {\em Francisco} is frequent, it is primarily seen in the bigram
+{\em San Francisco}.  In contrast, {\em glasses} is used with frequency in a larger number
+of bigrams.
+
+The highest occurring bigrams, based on Kneser-Ney smoothing, are shown in Table 6. Note
+that unigrams are excluded because they do not make sense to calculate (i.e. are no different
+from MLE unigrams) in the Kneser-Ney method.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|lr|}
+\hline \bf Bigrams & \\ \hline
+
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tokenStats} Written OANC bigram statistics (Kneser-Ney).
+Top 10 highest occurring bigrams found in the Written OANC dataset after
+applying Kneser-Ney smoothing.}
+\end{table}
+
+
+\end{document}
